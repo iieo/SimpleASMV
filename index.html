@@ -1,18 +1,24 @@
 <!doctype html>
 <html lang="de">
+
 <head>
-<meta charset="UTF-8">
-<meta content="origin" name="referrer">
+    <meta charset="UTF-8">
+    <meta content="origin" name="referrer">
 </head>
+
 <body>
-	<div>
- <button onclick="btnStart()">Start</button> 
-  <button onclick="btnDebug()">Debug</button> 
-   <button onclick="btnNextStep()">Next Step</button> 
-    <button onclick="reset()">Reset</button> 
-	</div>
-	<textarea id="cmdArea" rows="30"> </textarea>
-	<textarea id="outputArea" rows="30"> </textarea>
+    <div>
+        <button onclick="btnStart()">Start</button>
+        <button onclick="btnDebug()">Debug</button>
+        <button onclick="btnNextStep()">Next Step</button>
+        <button onclick="reset()">Reset</button>
+    </div>
+    <textarea id="cmdArea" rows="30"> </textarea>
+    <textarea id="outputArea" rows="30"> </textarea>
+    <textarea id="infoArea" rows="30" , cols="70"> </textarea>
+    <div>    
+        <textarea id="consoleArea" rows="10", cols="118"> </textarea>
+    </div>
 </body>
 <script src="script.js"></script>
 
