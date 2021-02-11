@@ -1,5 +1,6 @@
 console.log("start");
-
+let cmdArea = document.getElementById("cmdArea"); 
+let outputArea = document.getElementById("outputArea"); 
 let cells = [];
 let acc = 0;
 let bz = 0;
@@ -80,7 +81,15 @@ function executeCommand(cmd){
 	}
 	bz++;
 }
-
+function loadCommands(){
+	cmds = []
+	let cmdLines = cmdArea.value.split('\n');
+	for(let i = 0; i < cmdLines.length; i++){
+		if(cmdLines[i]){
+			cmds.push(cmdLines[i]);
+		}
+	}
+}
 function jump(x) {
 	for (let i=0; i<cmds.length;i++) {
 		if (cmds[i]===x+":") {
@@ -93,19 +102,20 @@ function jump(x) {
 }
 
 function run(){
+	loadCommands();
 	for(bz = 0; bz < cmds.length;){
 		executeCommand(cmds[bz]);
-		console.log(bz);
 	}
-	console.log("ACC::"+acc);
-	console.log(cells);
+	log("ACC::"+acc);
+	log(cells);
 }
 
 function* debugRun(){
+	loadCommands();
 	for(bz = 0; bz < cmds.length;){
 		executeCommand(cmds[bz]);
-		console.log("ACC::"+acc);
-		console.log(cells);
+		log("ACC::"+acc);
+		log(cells);
 		yield acc;
 	}
 }
@@ -115,11 +125,23 @@ function getValue(val){
 	if(val.startsWith("=")){
 		value = val[1];
 	}else{
-		value = cells[val] ? cells[val] : 0;
+		if(val >= 0){			
+			value = cells[val] ? cells[val] : 0;
+		}else{
+			console.error("specified cell is below 0");			
+		}
 	}
 	return value;
 }
-
+function log(log){
+	if (Array.isArray(log)) {
+		for (let i = 0; i < log.length; i++) {
+			outputArea.value += "R "+i+": "+(log[i]||0)+"\n";
+		}
+	} else {		
+		outputArea.value += log+"\n";
+	}
+}
 function btnStart(){
 	reset();
 	run();
@@ -131,7 +153,8 @@ function btnDebug(){
 }
 function btnNextStep(){
 	if(iterator){
-		console.log(iterator.next().value);
+		outputArea.value = "";
+		iterator.next().value;
 	}else{
 		btnDebug();
 	}
@@ -142,4 +165,6 @@ function reset(){
 	}
 	acc = 0;
 	bz = 0;
+	outputArea.value = "";
 }
+

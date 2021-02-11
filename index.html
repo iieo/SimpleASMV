@@ -3,14 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta content="origin" name="referrer">
-<script src="script.js"></script>
 </head>
 <body>
-
+	<div>
  <button onclick="btnStart()">Start</button> 
   <button onclick="btnDebug()">Debug</button> 
    <button onclick="btnNextStep()">Next Step</button> 
     <button onclick="reset()">Reset</button> 
-
+	</div>
+	<textarea id="cmdArea" rows="30"> </textarea>
+	<textarea id="outputArea" rows="30"> </textarea>
 </body>
+<script src="script.js"></script>
 </html>
