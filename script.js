@@ -4,6 +4,8 @@ let outputArea = document.getElementById("outputArea");
 let cells = [];
 let acc = 0;
 let bz = 0;
+let commandsTotal = 0;
+const MAX_COMMANDS = 10000
 let iterator
 let cmds = ["dload 0", "jeq end", "store 1", "end:", "load 1"];
 
@@ -80,6 +82,7 @@ function executeCommand(cmd){
 		acc = Math.floor(acc);
 	}
 	bz++;
+	commandsTotal++;
 }
 function loadCommands(){
 	cmds = []
@@ -104,16 +107,21 @@ function jump(x) {
 function run(){
 	loadCommands();
 	for(bz = 0; bz < cmds.length;){
-		executeCommand(cmds[bz]);
+		if(commandsTotal < MAX_COMMANDS){
+			executeCommand(cmds[bz]);
+		}
 	}
 	log("ACC::"+acc);
 	log(cells);
+	log("runs::"+commandsTotal)
 }
 
 function* debugRun(){
 	loadCommands();
 	for(bz = 0; bz < cmds.length;){
-		executeCommand(cmds[bz]);
+		if(commandsTotal < MAX_COMMANDS){
+			executeCommand(cmds[bz]);
+		}
 		log("ACC::"+acc);
 		log(cells);
 		yield acc;
@@ -131,15 +139,16 @@ function getValue(val){
 			console.error("specified cell is below 0");			
 		}
 	}
-	return value;
+	return parseInt(value);
 }
-function log(log){
-	if (Array.isArray(log)) {
-		for (let i = 0; i < log.length; i++) {
-			outputArea.value += "R "+i+": "+(log[i]||0)+"\n";
+function log(msg){
+	if (Array.isArray(msg)) {
+		log("Cells:");
+		for (let i = 0; i < msg.length; i++) {
+			outputArea.value += "  "+i+": "+(msg[i]||0)+"\n";
 		}
 	} else {		
-		outputArea.value += log+"\n";
+		outputArea.value += msg+"\n";
 	}
 }
 function btnStart(){
@@ -165,6 +174,6 @@ function reset(){
 	}
 	acc = 0;
 	bz = 0;
+    commandsTotal = 0;
 	outputArea.value = "";
 }
-
