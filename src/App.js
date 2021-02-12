@@ -2,9 +2,11 @@ import "./App.css";
 import React from "react";
 
 import AceEditor from "react-ace";
-import CellsContainer from "./cells";
 import "ace-builds/src-noconflict/mode-assembly_x86";
 import "ace-builds/src-noconflict/theme-monokai";
+
+import CellsContainer from "./cells";
+import Head from "./Head";
 
 /*  https://github.com/securingsincity/react-ace  */
 
@@ -12,12 +14,10 @@ function onChange(newValue) {}
 
 function App() {
   let [cells, setCells] = React.useState([0, 0, 0, 0]);
-
+  let [debugModus, setDebugModus] = React.useState(false);
   return (
     <div className="app">
-      <header className="header">
-        <h1 className="heading">Simple ASMR</h1>
-      </header>
+      <Head debugModus={debugModus} />
       <body className="body">
         <AceEditor
           mode="assembly_x86"

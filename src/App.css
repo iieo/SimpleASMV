@@ -8,14 +8,33 @@
   background-color: #303240;
   height: 60px;
   display: flex;
+  justify-content: space-between;
 
-  padding: 10px;
+  padding: 10px 30px;
   text-align: start;
 }
 
 .heading {
   color: white;
   margin: 0;
+}
+
+.runButton {
+  color: #fff;
+  border: 0;
+  height: 100%;
+  width: 60px;
+  border-radius: 10px;
+  margin: 0 10px;
+}
+.startButton {
+  background-color: #7ebc59;
+}
+.debugButton {
+  background-color: #368cbf;
+}
+.runButtonContainer {
+  height: 100%;
 }
 
 .body {

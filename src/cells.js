@@ -1,14 +1,6 @@
 import "./App.css";
 import React from "react";
 
-function comp() {
-  return (
-    <div>
-      <CellsContainer larslol={{ 1: "test" }}></CellsContainer>
-    </div>
-  );
-}
-
 class CellsContainer extends React.Component {
   constructor(props) {
     super(props);
