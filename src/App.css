@@ -1,38 +1,67 @@
-.App {
+.app {
   text-align: center;
+  background-color: #282a36;
+  height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header {
+  background-color: #303240;
+  height: 60px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+
+  padding: 10px;
+  text-align: start;
+}
+
+.heading {
   color: white;
+  margin: 0;
 }
 
-.App-link {
-  color: #61dafb;
+.body {
+  display: flex;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.debug-marker {
+  position: absolute;
+  background-color: aquamarine;
+}
+
+.cell {
+  background-color: #303240;
+  width: 100%;
+  padding: 5px;
+  margin: 15px 0;
+  border-radius: 5px;
+  position: relative;
+}
+.cellllel::after {
+  content: "";
+  background-color: #eeed;
+  position: absolute;
+  left: 0;
+  bottom: -15px;
+  width: 100%;
+  height: 2px;
+}
+.cellText {
+  color: whitesmoke;
+  font-size: 1.5rem;
+  margin: 15px;
+}
+.cellTextNo {
+  color: whitesmoke;
+  font-size: 0.9rem;
+  margin: 15px;
+}
+.cellContainer {
+  overflow-y: scroll;
+  padding: 0 5vw;
+  width: 30vw;
+  height: calc(100vh - 80px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(100, 1fr);
+  grid-column-gap: 4vw;
+  align-items: center;
 }
