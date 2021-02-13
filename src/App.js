@@ -29,7 +29,7 @@ function BodyWrapper(props) {
           props.asmdebugmode
             ? [
                 {
-                  startRow: props.asmdebugline,
+                  startRow: props.asmdebugline, //TODO überspringt Zeile 2
                   startCol: 0,
                   endRow: props.asmdebugline + 1,
                   endCol: 0,

@@ -32,16 +32,16 @@ function ASM(props) {
         setState((prev) => ({ ...prev, cells: tmpCells }));
         break;
       case "add":
-        acc += getValue(value);
-        break;
-      case "mult":
-        acc *= getValue(value);
-        break;
-      case "div":
-        acc /= getValue(value);
+        acc = parseInt(acc) + getValue(value);
         break;
       case "sub":
-        acc -= getValue(value);
+        acc = parseInt(acc) - getValue(value);
+        break;
+      case "mult":
+        acc = parseInt(acc) * getValue(value);
+        break;
+      case "div":
+        acc = parseInt(acc) / getValue(value);
         break;
       case "jeq":
         if (acc === 0) {
@@ -195,7 +195,6 @@ function ASM(props) {
     reset();
     for (; bz < cmds.length; ) {
       if (commandsTotal < MAX_COMMANDS) {
-        console.log(bz);
         setState((prev) => ({
           ...prev,
           debugLine: bz,
