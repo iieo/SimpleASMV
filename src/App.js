@@ -8,24 +8,32 @@ import "ace-builds/src-noconflict/theme-monokai";
 import CellsContainer from "./cells";
 import Head from "./Head";
 
+import ASM from "./asm"
+
 /*  https://github.com/securingsincity/react-ace  */
 
-function onChange(newValue) {}
 
 function App() {
-  let [cells, setCells] = React.useState([0, 0, 0, 0]);
   let [debugModus, setDebugModus] = React.useState(false);
+  let [code, setCode] = React.useState("");
+  function run(){
+    
+  }
+  function debug(){
+    
+  }
+
   return (
-    <div className="app">
-      <Head debugModus={debugModus} />
-      <body className="body">
+    <ASM className="app">
+      <Head debugModus={false} run={run} debug={debug}/>
+      <div className="body">
         <AceEditor
           mode="assembly_x86"
           theme="monokai"
           width="60vw"
           height="calc(100vh - 80px)"
           fontSize={20}
-          onChange={onChange}
+          onChange={setCode}
           name="codeEditor"
           placeholder="Type your code here..."
           editorProps={{ $blockScrolling: true }}
@@ -40,9 +48,9 @@ function App() {
             },
           ]}
         />
-        <CellsContainer cells={cells} />
-      </body>
-    </div>
+        <CellsContainer cells={[0,0]} />
+      </div>
+    </ASM>
   );
 }
 
