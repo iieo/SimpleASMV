@@ -11,10 +11,10 @@ export default function Head(props) {
     <header className="header">
       <h1 className="heading">Simple ASMR</h1>
       <div className="runButtonContainer">
-        <button className="runButton startButton" onClick={props.run}>
+        <button className="runButton startButton" onClick={props.asmrun}>
           <IoPlayOutline size={iconSize} />
         </button>
-        <button className="runButton debugButton" onClick={props.debug}>
+        <button className="runButton debugButton" onClick={props.asmdebug}>
           {props.debugModus ? (
             <IoPlayForwardOutline size={iconSize} />
           ) : (

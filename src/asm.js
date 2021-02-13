@@ -5,7 +5,7 @@ function ASM (props) {
     //TODO commands test for RegEx
     let cmds = [];
     let [state, setState] = useState({
-        debugIterator: "testIterator",
+        debugIterator: null,
         cells: [],
         acc: 0,
         bz: 0,
@@ -137,9 +137,9 @@ function ASM (props) {
         console.error("line " + state.bz + ": " + msg );
     }
         
-    function loadCommands(code) {
+    function loadCommands() {
         cmds = []
-        let cmdLines = code.split('\n');
+        let cmdLines = props.code.split('\n');
         for (let i = 0; i < cmdLines.length; i++) {
             // check for comments
             if (cmdLines[i].includes("//")) {
@@ -151,11 +151,45 @@ function ASM (props) {
             }
         }
     }
+
+    function run(){
+        loadCommands();
+        reset();
+        for (; state.bz < cmds.length;) {
+            if (state.commandsTotal < MAX_COMMANDS) {
+                executeCommand(getCommand(state.bz));
+            }
+        }
+    }
+    function debug(){ // former btnNextStep
+        if (state.debugIterator) {
+            state.debugIterator.next();
+        } else {
+            setState({debugIterator: createDebug()});
+        }
+    }
+    function* createDebug() {
+        loadCommands();
+        reset();
+        for (; state.bz < cmds.length;) {
+            if (state.commandsTotal < MAX_COMMANDS) {
+                executeCommand(cmds[state.bz]);
+            }
+            yield null; //hattest Recht, is unnötig iwas zurückzugeben
+        }
+    }
     
+    function reset() {
+        setState({bz: 0, commandsTotal: 0, acc: 0, cells: [0,0]});
+    }
     return(
         <div className={props.className}>
             {React.Children.map(props.children, child=> {
-                return React.cloneElement(child, {...child.props, asmdebug: state.debugIterator});
+                return React.cloneElement(child, 
+                    {   ...child.props, 
+                        asmdebugmode: state.debugIterator, 
+                        asmrun: run, asmdebug: debug
+                    }, null);
             })}
         </div>
     )

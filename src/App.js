@@ -14,7 +14,6 @@ import ASM from "./asm"
 
 
 function App() {
-  let [debugModus, setDebugModus] = React.useState(false);
   let [code, setCode] = React.useState("");
   function run(){
     
@@ -24,7 +23,7 @@ function App() {
   }
 
   return (
-    <ASM className="app">
+    <ASM className="app" code={code}>
       <Head debugModus={false} run={run} debug={debug}/>
       <div className="body">
         <AceEditor
