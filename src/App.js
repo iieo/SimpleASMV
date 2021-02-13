@@ -8,23 +8,20 @@ import "ace-builds/src-noconflict/theme-monokai";
 import CellsContainer from "./cells";
 import Head from "./Head";
 
-import ASM from "./asm"
+import ASM from "./asm";
 
 /*  https://github.com/securingsincity/react-ace  */
 
-
 function App() {
   let [code, setCode] = React.useState("");
-  function run(){
-    
-  }
-  function debug(){
-    
-  }
+  function run() {}
+  function debug() {}
 
   return (
-    <ASM className="app" code={code}>
-      <Head debugModus={false} run={run} debug={debug}/>
+    <div className="app">
+      <ASM  code={code}>
+        <Head debugModus={false} run={run} debug={debug} />
+      </ASM>
       <div className="body">
         <AceEditor
           mode="assembly_x86"
@@ -47,9 +44,9 @@ function App() {
             },
           ]}
         />
-        <CellsContainer cells={[0,0]} />
+        <CellsContainer cells={[0, 0]} />
       </div>
-    </ASM>
+    </div>
   );
 }
 

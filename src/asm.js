@@ -184,7 +184,7 @@ function ASM (props) {
     }
     return(
         <div className={props.className}>
-            {React.Children.map(props.children, child=> {
+            {React.Children.map(props.children, child => {
                 return React.cloneElement(child, 
                     {   ...child.props, 
                         asmdebugmode: state.debugIterator, 
