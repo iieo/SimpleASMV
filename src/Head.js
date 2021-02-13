@@ -9,7 +9,7 @@ export default function Head(props) {
   let iconSize = "80%";
   return (
     <header className="header">
-      <h1 className="heading">Simple ASMR</h1>
+      <h1 className="heading">eduASM</h1>
       <div className="runButtonContainer">
         <button className="runButton startButton" onClick={props.asmrun}>
           <IoPlayOutline size={iconSize} />
