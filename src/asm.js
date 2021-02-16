@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 function ASM(props) {
-  const MAX_COMMANDS = 10000,
+  const MAX_COMMANDS = 100,
     MAX_CELLS = 100; //TODO MAX CELLS
   //TODO commands test for RegEx
   let cmds = [],
@@ -15,13 +15,22 @@ function ASM(props) {
     cells: [0, 0, 0],
     acc: 0,
   });
-  function executeCommand(args) {
-    let cmdName = args[0],
-      value = args[1];
+  function executeCommand(cmdObject) {
+    commandsTotal++;
+    bz++;
+
+    if (cmdObject.mode !== "command") {
+      setState((prev) => ({
+        ...prev,
+        debugLine: cmdObject.lineNumber,
+      }));
+    }
+    let cmdName = cmdObject.args[0],
+      value = cmdObject.args[1];
     console.log(`Execute: ${cmdName} ${value} #${bz}`);
     switch (cmdName) {
       case "dload":
-        acc = value;
+        acc = parseInt(value);
         break;
       case "load":
         acc = getValue(value);
@@ -32,16 +41,16 @@ function ASM(props) {
         setState((prev) => ({ ...prev, cells: tmpCells }));
         break;
       case "add":
-        acc = parseInt(acc) + getValue(value);
+        acc = acc + getValue(value);
         break;
       case "sub":
-        acc = parseInt(acc) - getValue(value);
+        acc = acc - getValue(value);
         break;
       case "mult":
-        acc = parseInt(acc) * getValue(value);
+        acc = acc * getValue(value);
         break;
       case "div":
-        acc = parseInt(acc) / getValue(value);
+        acc = acc / getValue(value);
         break;
       case "jeq":
         if (acc === 0) {
@@ -75,7 +84,7 @@ function ASM(props) {
         break;
       case "jump":
         jump(value);
-        return; //TODO print
+        return;
       /*case "print":
                 consoleArea.value += getValue(value);
                 break;
@@ -85,51 +94,21 @@ function ASM(props) {
         throwError("Could not find command '" + cmdName + "'");
         break;
     }
-    setState((prev) => ({ ...prev, acc: Math.floor(acc) }));
-    bz++;
-    commandsTotal++;
-    console.log(state);
+    setState((prev) => ({
+      ...prev,
+      acc: Math.floor(acc),
+      debugLine: cmdObject.lineNumber,
+    }));
   }
 
   function jump(blockName) {
-    for (let i = 0; i < state.cmds.length; i++) {
-      if (state.cmds[i] === blockName + ":") {
-        bz = 1;
+    for (let i = 0; i < cmds.length; i++) {
+      if (cmds[i] === blockName + ":") {
+        bz = i;
         return;
       }
     }
-
     throwError("could not find block " + blockName);
-  }
-
-  function getCommand(index) {
-    let cmd = cmds[index];
-
-    cmd = cmd.trim().toLowerCase();
-    console.log(cmd);
-    while (cmd.indexOf("  ") !== -1) {
-      cmd = cmd.replace("  ", " ");
-    } // remove more than one space
-
-    let args = cmd.split(" ");
-
-    if (args.length > 2) {
-      throwError("more than 1 argument");
-    }
-
-    if (args[0].length > 0) {
-      args[0] = args[0].trim(); //TODO zb'    efdasd'
-    }
-    if (args[1].length > 1) {
-      args[1] = args[1].trim();
-    }
-
-    if (args.length <= 1) {
-      if (!cmd[cmd.length - 1] === ":") {
-        throwError("No command passed");
-      }
-    }
-    return args;
   }
 
   function getValue(arg) {
@@ -152,8 +131,35 @@ function ASM(props) {
     console.error("line " + bz + ": " + msg);
   }
 
-  function loadCommands() {
+  function loadCommandsFromLines(lines) {
     cmds = [];
+    for (let i = 0; i < lines.length; i++) {
+      let cmd = lines[i][0].trim().toLowerCase(),
+        args = null,
+        lineNumber = lines[i][1];
+
+      while (cmd.indexOf("  ") !== -1) {
+        cmd = cmd.replace("  ", " ");
+      } // remove more than one space
+      if (cmd.includes(" ")) {
+        args = cmd.split(" ");
+        if (args.length > 2) {
+          throwError(`Too many arguments! - ${cmd}`);
+        } else {
+          cmds.push({ args, lineNumber, mode: "command" });
+        }
+      } else {
+        if (!cmd.endsWith(":")) {
+          throwError(`Command without args passed - ${cmd}`);
+        } else {
+          cmds.push({ args, lineNumber, mode: "block" });
+        }
+      }
+    }
+  }
+
+  function loadLines() {
+    let lines = [];
     let cmdLines = props.code.split("\n");
     for (let i = 0; i < cmdLines.length; i++) {
       // check for comments
@@ -162,23 +168,34 @@ function ASM(props) {
       }
       // check if line is empty
       if (cmdLines[i].trim().length > 1) {
-        cmds.push(cmdLines[i]);
+        lines.push([cmdLines[i], i]);
       }
     }
+    return lines;
   }
 
   function run() {
-    loadCommands();
     reset();
+    loadCommandsFromLines(loadLines());
     for (; bz < cmds.length; ) {
       if (commandsTotal < MAX_COMMANDS) {
-        executeCommand(getCommand(bz));
+        executeCommand(cmds[bz]);
+      } else {
+        //sollte es zu lange laufen springt es hier aus der schleife raus
+        break;
       }
     }
   }
   function debug() {
     if (state.debugIterator) {
-      state.debugIterator.next();
+      let job = state.debugIterator.next();
+      if (job.done) {
+        setState((prev) => ({
+          ...prev,
+          debugMode: false,
+          debugIterator: null,
+        }));
+      }
     } else {
       let debugIterator = createDebug();
       debugIterator.next();
@@ -191,17 +208,15 @@ function ASM(props) {
     }
   }
   function* createDebug() {
-    loadCommands();
     reset();
+    loadCommandsFromLines(loadLines());
     for (; bz < cmds.length; ) {
       if (commandsTotal < MAX_COMMANDS) {
-        setState((prev) => ({
-          ...prev,
-          debugLine: bz,
-        }));
-        executeCommand(getCommand(bz));
+        executeCommand(cmds[bz]);
+      } else {
+        break;
       }
-      yield null;
+      yield bz;
     }
   }
 
@@ -209,6 +224,8 @@ function ASM(props) {
     bz = 0;
     commandsTotal = 0;
     setState((prev) => ({ ...prev, acc: 0, cells: [0, 0, 0], debugLine: 0 }));
+    console.log("RESET");
+    console.log(state);
   }
   return (
     <div className={props.className}>
