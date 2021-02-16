@@ -13,7 +13,9 @@ class CellsContainer extends React.Component {
     if (this.props.asmcells) {
       this.cells = [];
       for (let i = 0; i < this.props.asmcells.length; i++) {
-        this.cells.push(<Cell value={this.props.asmcells[i]} id={i}></Cell>);
+        this.cells.push(
+          <Cell value={this.props.asmcells[i]} id={i} key={i}></Cell>
+        );
       }
     }
     return (

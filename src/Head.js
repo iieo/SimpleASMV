@@ -4,6 +4,8 @@ import {
   IoBugOutline,
   IoPlayOutline,
   IoPlayForwardOutline,
+  IoDownloadOutline,
+  IoFolderOpenOutline,
 } from "react-icons/io5";
 
 export default function Head(props) {
@@ -28,11 +30,20 @@ export default function Head(props) {
           <IoPlayOutline size={iconSize} />
         </button>
         <button className="runButton debugButton" onClick={props.asmdebug}>
-          {props.debugModus ? (
+          {props.asmdebugmode ? (
             <IoPlayForwardOutline size={iconSize} />
           ) : (
             <IoBugOutline size={iconSize} />
           )}
+        </button>
+        <button
+          className="runButton downloadButton"
+          onClick={props.asmdownload}
+        >
+          <IoDownloadOutline size={iconSize} />
+        </button>
+        <button className="runButton uploadButton" onClick={props.asmupload}>
+          <IoFolderOpenOutline size={iconSize} />
         </button>
       </div>
     </header>

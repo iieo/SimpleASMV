@@ -244,8 +244,51 @@ function ASM(props) {
     setState((prev) => ({ ...prev, acc: 0, cells: [0, 0, 0], debugLine: 0 }));
     console.log("RESET");
   }
+  function downloadCode() {
+    downloadFile("program.asm", props.code, "text/plain");
+  }
+  function downloadFile(filename, data, type) {
+    var file = new Blob([data], { type: type });
+    if (window.navigator.msSaveOrOpenBlob)
+      // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else {
+      // Others
+      var a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  }
+  function uploadFile() {
+    fileInputElement.click();
+  }
+  function inputChanged(e) {
+    let file = e.target.files[0];
+    console.log(file);
+    if (file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        props.setCode(e.target.result); //TODO RegEx
+      };
+      reader.readAsText(file);
+    }
+  }
+  let fileInputElement;
   return (
     <div className={props.className}>
+      <input
+        type="file"
+        style={{ display: "none" }}
+        onChange={inputChanged}
+        ref={(input) => (fileInputElement = input)}
+      ></input>
       {React.Children.map(props.children, (child) => {
         if (child.type === "div") {
           return child;
@@ -258,6 +301,8 @@ function ASM(props) {
             asmcells: state.cells,
             asmacc: state.acc,
             asmdebugline: state.debugLine,
+            asmdownload: downloadCode,
+            asmupload: uploadFile,
             asmrun: run,
             asmdebug: debug,
           },

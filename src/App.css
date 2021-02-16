@@ -33,6 +33,12 @@
 .debugButton {
   background-color: #368cbf;
 }
+.downloadButton {
+  background-color: #ff79c6;
+}
+.uploadButton {
+  background-color: #bd93ec;
+}
 .runButtonContainer {
   height: 100%;
 }
