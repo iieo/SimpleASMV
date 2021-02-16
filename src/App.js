@@ -12,7 +12,6 @@ import ASM from "./asm";
 
 /*  https://github.com/securingsincity/react-ace  */
 function BodyWrapper(props) {
-  console.log("line: " + props.asmdebugline);
   return (
     <div className="body">
       <AceEditor

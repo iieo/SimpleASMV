@@ -24,10 +24,11 @@ function ASM(props) {
         ...prev,
         debugLine: cmdObject.lineNumber,
       }));
+      return;
     }
     let cmdName = cmdObject.args[0],
       value = cmdObject.args[1];
-    console.log(`Execute: ${cmdName} ${value} #${bz}`);
+    console.debug(`Execute: ${cmdName} ${value} #${bz}`);
     switch (cmdName) {
       case "dload":
         acc = parseInt(value);
@@ -84,7 +85,7 @@ function ASM(props) {
         break;
       case "jump":
         jump(value);
-        return;
+        break;
       /*case "print":
                 consoleArea.value += getValue(value);
                 break;
@@ -102,13 +103,15 @@ function ASM(props) {
   }
 
   function jump(blockName) {
-    for (let i = 0; i < cmds.length; i++) {
-      if (cmds[i] === blockName + ":") {
-        bz = i;
-        return;
-      }
+    let blocks = cmds.filter((item) => blockName === item.blockName);
+    if (blocks.length === 0) {
+      throwError(`could not find block ${blockName}`);
+    } else if (blocks.length === 1) {
+      bz = blocks[0].position;
+      console.debug(`jumped to command #${blocks[0].position}`);
+    } else {
+      throwError(`more than one block with the name ${blockName} was found!`);
     }
-    throwError("could not find block " + blockName);
   }
 
   function getValue(arg) {
@@ -135,24 +138,35 @@ function ASM(props) {
     cmds = [];
     for (let i = 0; i < lines.length; i++) {
       let cmd = lines[i][0].trim().toLowerCase(),
-        args = null,
         lineNumber = lines[i][1];
 
       while (cmd.indexOf("  ") !== -1) {
         cmd = cmd.replace("  ", " ");
       } // remove more than one space
       if (cmd.includes(" ")) {
-        args = cmd.split(" ");
+        let args = cmd.split(" ");
         if (args.length > 2) {
           throwError(`Too many arguments! - ${cmd}`);
         } else {
-          cmds.push({ args, lineNumber, mode: "command" });
+          let position = cmds.length;
+          cmds.push({
+            args,
+            lineNumber,
+            mode: "command",
+            position,
+          });
         }
       } else {
         if (!cmd.endsWith(":")) {
           throwError(`Command without args passed - ${cmd}`);
         } else {
-          cmds.push({ args, lineNumber, mode: "block" });
+          let position = cmds.length;
+          cmds.push({
+            blockName: cmd.replace(":", ""),
+            lineNumber,
+            mode: "block",
+            position,
+          });
         }
       }
     }
@@ -177,6 +191,7 @@ function ASM(props) {
   function run() {
     reset();
     loadCommandsFromLines(loadLines());
+    console.debug(cmds);
     for (; bz < cmds.length; ) {
       if (commandsTotal < MAX_COMMANDS) {
         executeCommand(cmds[bz]);
@@ -185,6 +200,21 @@ function ASM(props) {
         break;
       }
     }
+    console.log(`Executed a total of ${commandsTotal} commands.`);
+  }
+  function* createDebug() {
+    reset();
+    loadCommandsFromLines(loadLines());
+    console.debug(cmds);
+    for (; bz < cmds.length; ) {
+      if (commandsTotal < MAX_COMMANDS) {
+        executeCommand(cmds[bz]);
+      } else {
+        break;
+      }
+      yield bz;
+    }
+    console.log(`Executed ${commandsTotal} commands.`);
   }
   function debug() {
     if (state.debugIterator) {
@@ -207,25 +237,12 @@ function ASM(props) {
       }));
     }
   }
-  function* createDebug() {
-    reset();
-    loadCommandsFromLines(loadLines());
-    for (; bz < cmds.length; ) {
-      if (commandsTotal < MAX_COMMANDS) {
-        executeCommand(cmds[bz]);
-      } else {
-        break;
-      }
-      yield bz;
-    }
-  }
 
   function reset() {
     bz = 0;
     commandsTotal = 0;
     setState((prev) => ({ ...prev, acc: 0, cells: [0, 0, 0], debugLine: 0 }));
     console.log("RESET");
-    console.log(state);
   }
   return (
     <div className={props.className}>
