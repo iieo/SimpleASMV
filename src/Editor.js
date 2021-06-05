@@ -5,7 +5,7 @@ import "ace-builds/src-noconflict/mode-assembly_x86";
 import "ace-builds/src-noconflict/theme-monokai";
 
 export default function Editor(props) {
-  return (
+  let editor = (
     <AceEditor
       value={props.code}
       mode="assembly_x86"
@@ -33,4 +33,5 @@ export default function Editor(props) {
       }
     />
   );
+  return editor;
 }

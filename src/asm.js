@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 function ASM(props) {
-  const MAX_COMMANDS = 100,
+  const MAX_COMMANDS = 10000,
     MAX_CELLS = 100; //TODO MAX CELLS
   //TODO commands test for RegEx
   let cmds = [],
